@@ -75,7 +75,6 @@ def head(title,desc):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script>try{{var a=localStorage.getItem('accent');if(a&&a!=='blue')document.documentElement.dataset.accent=a}}catch(e){{}}</script>
 <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>

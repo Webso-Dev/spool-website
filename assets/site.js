@@ -205,20 +205,3 @@
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){size();_paint(cur,0)});
   var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){size();_paint(cur,0)},200)});
 })();
-
-// Accent switcher: a row of swatches at the very top. The choice is remembered on this device.
-(function(){
-  var A=[["blue","Blue","#2f6bff"],["violet","Violet","#924aea"],["green","Green","#00934a"],["teal","Teal","#008c91"],["orange","Orange","#bd5b00"],["rose","Rose","#e00a55"]];
-  var root=document.documentElement, cur=root.dataset.accent||'blue';
-  var bar=document.createElement('div');bar.className='accents';
-  var lab=document.createElement('span');lab.textContent='Accent';bar.appendChild(lab);
-  var btns=A.map(function(a){
-    var b=document.createElement('button');b.type='button';b.title=a[1];b.setAttribute('aria-label',a[1]+' accent');b.style.setProperty('--sw',a[2]);
-    b.addEventListener('click',function(){set(a[0])});bar.appendChild(b);return b;
-  });
-  function set(k){cur=k;if(k==='blue')delete root.dataset.accent;else root.dataset.accent=k;
-    btns.forEach(function(b,i){b.setAttribute('aria-pressed',A[i][0]===k)});
-    try{localStorage.setItem('accent',k)}catch(e){}}
-  set(cur);
-  document.body.insertBefore(bar,document.body.firstChild);
-})();
