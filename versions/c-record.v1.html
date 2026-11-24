@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spool — Every change to your software, done and written down</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="spool.css">
+<style>
+/* Hero: the pitch left; a giant dotted spool feeding its thread into your repository on the right */
+.hero{position:relative;max-width:1240px;margin:0 auto;padding:80px 24px 104px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.hero::before{content:"";position:absolute;inset:0 -20% 0 30%;background:radial-gradient(ellipse 45% 45% at 50% 45%,#2f6bff33,transparent 70%);pointer-events:none}
+.hero > *{position:relative}
+.hero h1{font-size:clamp(42px,5.2vw,70px);line-height:1.02;letter-spacing:-.04em;font-weight:500;text-wrap:balance}
+.hero p{margin-top:22px;font-size:19px;color:var(--fg-2);max-width:44ch}
+.hero .actions{margin-top:34px;display:flex;gap:10px;flex-wrap:wrap}
+.since{display:inline-flex;align-items:center;gap:10px;margin-bottom:26px;font-size:14px;color:var(--fg-2)}
+.since i{width:7px;height:7px;border-radius:50%;background:#9dffc8;box-shadow:0 0 0 3px #9dffc833}
+.art{position:relative;height:560px}
+.art svg.reel{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
+.thread-path{stroke-dasharray:600;stroke-dashoffset:600;animation:pull 1.6s cubic-bezier(.6,0,.2,1) .2s forwards}
+@keyframes pull{to{stroke-dashoffset:0}}
+.term{position:absolute;left:150px;top:340px;width:400px;border:1px solid var(--line-2);border-radius:12px;background:#0f0e0e;box-shadow:0 40px 80px -30px #000,0 0 0 1px #2f6bff22;overflow:hidden}
+.term .bar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--line)}
+.term .bar i{width:9px;height:9px;border-radius:50%;background:var(--bg-4)}
+.term .bar span{margin-left:8px;font-family:var(--mono);font-size:12px;color:var(--fg-3)}
+.term pre{font-family:var(--mono);font-size:12.5px;line-height:1.9;padding:14px 16px 16px;color:var(--fg-2);white-space:pre}
+.term pre > span{display:block;opacity:0;animation:in .35s ease forwards}
+.term .h{color:var(--blue-text)}.term .p{color:var(--fg-3)}
+.term pre > span:nth-child(1){animation-delay:1.4s}.term pre > span:nth-child(2){animation-delay:1.7s}.term pre > span:nth-child(3){animation-delay:1.95s}.term pre > span:nth-child(4){animation-delay:2.2s}.term pre > span:nth-child(5){animation-delay:2.45s}
+@keyframes in{to{opacity:1}}
+.cursor{display:inline-block;width:7px;height:14px;background:var(--blue-text);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.thread-path{animation:none;stroke-dashoffset:0}.term pre > span{animation:none;opacity:1}.cursor{animation:none}}
+
+.stack{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:26px 32px}
+.stack small{font-size:14px;color:var(--fg-3);white-space:nowrap}
+.stack ul{list-style:none;display:flex;gap:32px;flex-wrap:wrap;justify-content:flex-end}
+.stack li{font-size:17px;font-weight:600;letter-spacing:-.01em;color:var(--fg-3)}
+
+/* Problem statement */
+.statement{padding:104px 64px 72px;max-width:920px}
+.statement p{font-size:clamp(28px,3.2vw,42px);line-height:1.18;letter-spacing:-.025em;text-wrap:pretty}
+.statement p span{color:var(--fg-3)}
+
+/* Artifacts */
+.artifacts{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+.artifact{padding:28px 26px 32px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:18px}
+.artifact:last-child{border-right:0}
+.artifact h3{font-size:18px;font-weight:600}
+.artifact p{font-size:15px;color:var(--fg-2);margin-top:-10px}
+.doc{border:1px solid var(--line-2);border-radius:10px;background:var(--bg-2);overflow:hidden;font-size:13px;flex:1}
+.doc .path{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11.5px;color:var(--fg-3)}
+.doc .body{padding:14px 14px 16px;display:grid;gap:9px;color:var(--fg-2);line-height:1.5}
+.doc .body b{color:var(--fg);font-weight:600}
+.doc .body .lbl{font-size:11.5px;color:var(--blue-text);margin-bottom:-6px}
+.doc .ent{display:grid;grid-template-columns:44px 1fr;gap:8px;font-family:var(--mono);font-size:12px}
+.doc .ent span:first-child{color:var(--blue-text)}
+.audit{width:100%;border-collapse:collapse;font-size:12px}
+.audit td{padding:7px 10px;border-bottom:1px solid var(--line);color:var(--fg-2);vertical-align:top}
+.audit tr:last-child td{border-bottom:0}
+.audit td:first-child{font-family:var(--mono);color:var(--fg-3);white-space:nowrap}
+.audit td b{color:var(--fg);font-weight:500}
+
+/* Limits panel */
+.limits{display:grid;grid-template-columns:1fr 1.25fr;border-top:1px solid var(--line)}
+.limits > div{padding:40px}
+.limits > div:first-child{border-right:1px solid var(--line)}
+.limits ul{list-style:none;display:grid;gap:18px;margin-top:4px}
+.limits li b{display:block;font-weight:600}
+.limits li span{font-size:15.5px;color:var(--fg-2)}
+.panel{border:1px solid var(--line-2);border-radius:14px;background:var(--bg-2);overflow:hidden;box-shadow:0 30px 80px -30px #000}
+.panel-h{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.panel-h b{font-weight:600;font-size:14.5px}
+.panel-h span{font-size:12.5px;color:var(--fg-3)}
+.rule{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.rule:last-child{border-bottom:0}
+.rule div b{display:block;font-weight:500;font-size:14.5px}
+.rule div small{font-size:12.5px;color:var(--fg-3)}
+.seg{display:inline-flex;flex-shrink:0;padding:3px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
+.seg span{font-size:12.5px;padding:5px 12px;border-radius:999px;color:var(--fg-3);white-space:nowrap}
+.seg span.on{background:var(--blue);color:#fff}
+.seg span.ask{background:var(--bg-4);color:var(--fg)}
+
+/* Ticket */
+.ticket{display:grid;grid-template-columns:1.2fr 1fr;border-top:1px solid var(--line)}
+.ticket > div{padding:40px}
+.ticket > div:first-child{border-right:1px solid var(--line)}
+.result{display:flex;flex-direction:column;justify-content:center;gap:28px;background:radial-gradient(circle,#f0e3de12 1px,transparent 1.3px) 0 0/6px 6px}
+.result b{display:block;font-size:clamp(48px,5vw,70px);line-height:1;letter-spacing:-.045em;font-weight:500}
+.result b small{font-size:.4em;letter-spacing:-.01em;color:var(--fg-2);margin-left:6px}
+.result .us b{color:var(--blue-text)}
+.result .them b{color:var(--fg-3)}
+.result p{margin-top:8px;color:var(--fg-2);font-size:15px}
+.result .them{padding-top:24px;border-top:1px solid var(--line)}
+
+/* Compliance */
+.comp .cell h3{display:flex;align-items:center;gap:10px}
+.comp .cell h3 em{font-style:normal;font-size:11.5px;font-weight:500;padding:2px 8px;border-radius:999px;border:1px solid var(--blue-line);color:var(--blue-text)}
+
+/* Origin + cost */
+.proof{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+.proof > div{padding:40px}
+.proof > div:first-child{border-right:1px solid var(--line)}
+.proof h3{font-size:22px;font-weight:500;letter-spacing:-.02em;margin-bottom:10px}
+.proof > div > p{color:var(--fg-2);font-size:15.5px;margin-bottom:26px;max-width:44ch}
+.pair{display:grid;gap:14px}
+.pair div{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:14px;font-size:14.5px;color:var(--fg-2)}
+.pair i{display:flex;align-items:center;height:30px;border-radius:3px;padding-left:10px;font-style:normal;font-weight:600;font-size:14px;color:var(--fg);white-space:nowrap}
+.pair i.old{--dot:#f0e3de26;background-color:#f0e3de0d}
+.pair i.new{--dot:#6f98ff55;background-color:#2f6bff3a;box-shadow:inset 0 0 0 1px #2f6bff88;color:#e3ebff}
+
+@media (max-width:980px){
+  .hero{grid-template-columns:1fr;padding-top:48px}
+  .art{height:520px;max-width:560px;width:100%;margin:0 auto}
+}
+@media (max-width:900px){
+  .artifacts,.limits,.ticket,.proof{grid-template-columns:1fr}
+  .artifact,.limits > div:first-child,.ticket > div:first-child,.proof > div:first-child{border-right:0;border-bottom:1px solid var(--line)}
+  .limits > div,.ticket > div,.proof > div{padding:28px 20px}
+  .statement{padding:72px 20px 48px}
+  .stack{flex-direction:column;align-items:flex-start}.stack ul{justify-content:flex-start;gap:18px}
+}
+@media (max-width:560px){
+  .art{height:470px}
+  .term{left:auto;right:0;width:100%;max-width:360px;top:300px}
+  .term pre{font-size:11px}
+  .rule{flex-direction:column;align-items:flex-start}
+  .pair div{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="logo" href="#" aria-label="Spool home"><svg class="spool-logo" height="26" viewBox="0 0 270 110" fill="currentColor" role="img" aria-label="Spool"><path d="M13.1001 24.8C13.1001 27 13.8334 28.8 15.3001 30.2C16.8334 31.5333 18.8001 32.6667 21.2001 33.6C23.6668 34.4667 26.4668 35.2 29.6001 35.8C32.7334 36.4 35.9334 37.0667 39.2001 37.8C42.4668 38.4667 45.6668 39.3333 48.8001 40.4C51.9334 41.4 54.7001 42.7667 57.1001 44.5C59.5668 46.1667 61.5334 48.3 63.0001 50.9C64.5334 53.5 65.3001 56.7333 65.3001 60.6C65.3001 63.8667 64.4668 66.9667 62.8001 69.9C61.2001 72.8333 59.0001 75.3667 56.2001 77.5C53.4001 79.6333 50.1001 81.3333 46.3001 82.6C42.5001 83.8667 38.4001 84.5 34.0001 84.5C29.0668 84.5 24.6001 83.8 20.6001 82.4C16.6668 81 13.2668 79.1 10.4001 76.7C7.53343 74.2333 5.2001 71.3333 3.4001 68C1.66676 64.6 0.533431 60.9333 9.77516e-05 57H12.2001C13.3334 62.3333 15.8334 66.4667 19.7001 69.4C23.5668 72.2667 28.4334 73.7 34.3001 73.7C36.9668 73.7 39.4668 73.3667 41.8001 72.7C44.1334 72.0333 46.1668 71.1333 47.9001 70C49.6334 68.8667 51.0001 67.5333 52.0001 66C53.0001 64.4667 53.5001 62.8667 53.5001 61.2C53.5001 58.6 52.7334 56.5 51.2001 54.9C49.7334 53.3 47.7668 52 45.3001 51C42.9001 49.9333 40.1334 49.1 37.0001 48.5C33.8668 47.8333 30.6668 47.2 27.4001 46.6C24.1334 45.9333 20.9334 45.1667 17.8001 44.3C14.6668 43.3667 11.8668 42.1667 9.4001 40.7C7.0001 39.1667 5.03343 37.2333 3.5001 34.9C2.03343 32.5 1.3001 29.5 1.3001 25.9C1.3001 22.6333 2.03343 19.6 3.5001 16.8C5.03343 13.9333 7.13343 11.4667 9.8001 9.39999C12.4668 7.26666 15.6001 5.6 19.2001 4.4C22.8668 3.13333 26.8334 2.49999 31.1001 2.49999C35.5001 2.49999 39.5668 3.16666 43.3001 4.5C47.0334 5.83333 50.2668 7.7 53.0001 10.1C55.8001 12.5 58.0334 15.4 59.7001 18.8C61.3668 22.2 62.3001 26 62.5001 30.2H50.3001C50.1001 27.4 49.4001 24.9333 48.2001 22.8C47.0668 20.6667 45.5668 18.9 43.7001 17.5C41.9001 16.0333 39.8334 14.9333 37.5001 14.2C35.1668 13.4667 32.7001 13.1 30.1001 13.1C27.7001 13.1 25.4668 13.4333 23.4001 14.1C21.3334 14.7 19.5334 15.5333 18.0001 16.6C16.4668 17.6 15.2668 18.8333 14.4001 20.3C13.5334 21.7 13.1001 23.2 13.1001 24.8ZM78.9196 77.4V110H68.1196V54.9C68.1196 50.5667 68.853 46.6 70.3196 43C71.7863 39.4 73.8196 36.3 76.4196 33.7C79.0863 31.1 82.2196 29.1 85.8196 27.7C89.4863 26.2333 93.453 25.5 97.7196 25.5C101.986 25.5 105.92 26.2667 109.52 27.8C113.12 29.3333 116.22 31.4333 118.82 34.1C121.486 36.7667 123.553 39.9 125.02 43.5C126.486 47.0333 127.22 50.8333 127.22 54.9C127.22 59.0333 126.486 62.9 125.02 66.5C123.62 70.1 121.62 73.2333 119.02 75.9C116.486 78.5667 113.453 80.6667 109.92 82.2C106.386 83.7333 102.52 84.5 98.3196 84.5C94.453 84.5 90.8863 83.9 87.6196 82.7C84.353 81.4333 81.453 79.6667 78.9196 77.4ZM97.5196 74C100.253 74 102.753 73.5333 105.02 72.6C107.353 71.6 109.353 70.2667 111.02 68.6C112.686 66.8667 113.953 64.8667 114.82 62.6C115.753 60.3333 116.22 57.9 116.22 55.3C116.22 52.5667 115.753 50.0333 114.82 47.7C113.886 45.3 112.586 43.2333 110.92 41.5C109.253 39.7667 107.286 38.4 105.02 37.4C102.753 36.4 100.253 35.9 97.5196 35.9C94.7863 35.9 92.253 36.4 89.9196 37.4C87.5863 38.4 85.5863 39.7667 83.9196 41.5C82.253 43.2333 80.953 45.3 80.0196 47.7C79.0863 50.0333 78.6196 52.5667 78.6196 55.3C78.6196 57.9 79.0863 60.3333 80.0196 62.6C80.953 64.8667 82.253 66.8667 83.9196 68.6C85.5863 70.2667 87.553 71.6 89.8196 72.6C92.153 73.5333 94.7196 74 97.5196 74ZM160.359 84.5C156.025 84.5 151.992 83.7333 148.259 82.2C144.592 80.6 141.425 78.4667 138.759 75.8C136.092 73.1333 133.992 70.0333 132.459 66.5C130.992 62.9 130.259 59.0667 130.259 55C130.259 50.8667 130.992 47 132.459 43.4C133.992 39.8 136.092 36.6667 138.759 34C141.425 31.3333 144.592 29.2333 148.259 27.7C151.992 26.1667 156.025 25.4 160.359 25.4C164.692 25.4 168.659 26.1667 172.259 27.7C175.925 29.2333 179.059 31.3333 181.659 34C184.325 36.6667 186.392 39.8 187.859 43.4C189.392 47 190.159 50.8667 190.159 55C190.159 59.0667 189.392 62.9 187.859 66.5C186.392 70.0333 184.325 73.1333 181.659 75.8C179.059 78.4667 175.925 80.6 172.259 82.2C168.659 83.7333 164.692 84.5 160.359 84.5ZM160.359 36C157.559 36 154.992 36.5 152.659 37.5C150.392 38.4333 148.425 39.7667 146.759 41.5C145.159 43.1667 143.892 45.1333 142.959 47.4C142.092 49.6 141.659 52 141.659 54.6C141.659 57.3333 142.125 59.8667 143.059 62.2C143.992 64.4667 145.259 66.4667 146.859 68.2C148.525 69.8667 150.492 71.2 152.759 72.2C155.092 73.1333 157.625 73.6 160.359 73.6C163.092 73.6 165.592 73.1333 167.859 72.2C170.192 71.2 172.159 69.8667 173.759 68.2C175.425 66.4667 176.725 64.4667 177.659 62.2C178.592 59.8667 179.059 57.3333 179.059 54.6C179.059 52 178.592 49.6 177.659 47.4C176.725 45.1333 175.425 43.1667 173.759 41.5C172.159 39.7667 170.192 38.4333 167.859 37.5C165.592 36.5 163.092 36 160.359 36ZM223.374 84.5C219.041 84.5 215.008 83.7333 211.274 82.2C207.608 80.6 204.441 78.4667 201.774 75.8C199.108 73.1333 197.008 70.0333 195.474 66.5C194.008 62.9 193.274 59.0667 193.274 55C193.274 50.8667 194.008 47 195.474 43.4C197.008 39.8 199.108 36.6667 201.774 34C204.441 31.3333 207.608 29.2333 211.274 27.7C215.008 26.1667 219.041 25.4 223.374 25.4C227.708 25.4 231.674 26.1667 235.274 27.7C238.941 29.2333 242.074 31.3333 244.674 34C247.341 36.6667 249.408 39.8 250.874 43.4C252.408 47 253.174 50.8667 253.174 55C253.174 59.0667 252.408 62.9 250.874 66.5C249.408 70.0333 247.341 73.1333 244.674 75.8C242.074 78.4667 238.941 80.6 235.274 82.2C231.674 83.7333 227.708 84.5 223.374 84.5ZM223.374 36C220.574 36 218.008 36.5 215.674 37.5C213.408 38.4333 211.441 39.7667 209.774 41.5C208.174 43.1667 206.908 45.1333 205.974 47.4C205.108 49.6 204.674 52 204.674 54.6C204.674 57.3333 205.141 59.8667 206.074 62.2C207.008 64.4667 208.274 66.4667 209.874 68.2C211.541 69.8667 213.508 71.2 215.774 72.2C218.108 73.1333 220.641 73.6 223.374 73.6C226.108 73.6 228.608 73.1333 230.874 72.2C233.208 71.2 235.174 69.8667 236.774 68.2C238.441 66.4667 239.741 64.4667 240.674 62.2C241.608 59.8667 242.074 57.3333 242.074 54.6C242.074 52 241.608 49.6 240.674 47.4C239.741 45.1333 238.441 43.1667 236.774 41.5C235.174 39.7667 233.208 38.4333 230.874 37.5C228.608 36.5 226.108 36 223.374 36ZM269.867 83H258.966V-4.29153e-06H269.867V83Z"/></svg></a>
+  <nav aria-label="Main"><a href="#record">The record</a><a href="#limits">Your limits</a><a href="#ticket">A ticket</a><a href="#security">Security</a></nav>
+  <div class="right"><a class="pill pill-sm" href="mailto:hello@spool.example">Contact</a><a class="pill pill-sm pill-blue" href="#call">Book a call</a></div>
+</header>
+
+<main>
+<section class="hero">
+  <div>
+    <span class="since"><i></i>Taking on design partners for 2026</span>
+    <h1>Every change to your software, done and written down</h1>
+    <p>Spool takes over the maintenance of your custom systems. We fix, update and patch them in hours, and leave a record of every change in your own repository. The knowledge stays with you.</p>
+    <div class="actions"><a class="pill pill-blue" href="#call">Book a 30-minute call</a><a class="pill" href="#record">See what we leave behind</a></div>
+  </div>
+  <div class="art" aria-hidden="true">
+    <svg class="reel" viewBox="0 0 560 560" preserveAspectRatio="xMidYMin meet">
+      <defs>
+        <pattern id="dl" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.5" cy="3.5" r="1.7" fill="#f0e3de"/></pattern>
+        <pattern id="db" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.5" cy="3.5" r="1.9" fill="#4a7fff"/></pattern>
+        <pattern id="dd" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.5" cy="3.5" r="1.9" fill="#1d3f9e"/></pattern>
+        <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity=".55"/></linearGradient>
+        <mask id="m"><rect width="560" height="560" fill="url(#fade)"/></mask>
+      </defs>
+      <g mask="url(#m)">
+        <rect x="40" y="20" width="300" height="42" rx="12" fill="url(#dl)"/>
+        <rect x="76" y="62" width="228" height="214" fill="url(#db)"/>
+        <rect x="76" y="92" width="228" height="7" fill="url(#dd)"/><rect x="76" y="134" width="228" height="7" fill="url(#dd)"/><rect x="76" y="176" width="228" height="7" fill="url(#dd)"/><rect x="76" y="218" width="228" height="7" fill="url(#dd)"/>
+        <rect x="40" y="276" width="300" height="42" rx="12" fill="url(#dl)"/>
+      </g>
+      <path class="thread-path" d="M304 250 C 360 250, 380 300, 330 330 S 240 330, 236 340" fill="none" stroke="#6f98ff" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="236" cy="341" r="4.5" fill="#6f98ff"/>
+    </svg>
+    <div class="term">
+      <div class="bar"><i></i><i></i><i></i><span>order-system — git log</span></div>
+<pre><span><span class="p">$</span> git log --oneline -4</span><span><span class="h">a1f3c9e</span> Upgrade Spring Boot 2.7 to 3.2</span><span><span class="h">7be20d4</span> Fix VAT rounding on credit notes</span><span><span class="h">c9d4e11</span> Update bank API to version 4</span><span><span class="p">$</span> <i class="cursor"></i></span></pre>
+    </div>
+  </div>
+</section>
+
+<div class="frame">
+  <div class="bobbin" aria-hidden="true"><svg width="17" height="15" viewBox="0 0 28 24" fill="none"><rect x="1" y="1" width="18" height="4" rx="1.5" fill="#f0e3de"/><rect x="1" y="19" width="18" height="4" rx="1.5" fill="#f0e3de"/><rect x="4" y="5" width="12" height="14" fill="#2f6bff"/></svg></div>
+  <div class="rail" aria-hidden="true"></div>
+
+  <div class="block flush stack"><small>Systems we keep running</small><ul><li>Java &amp; Spring</li><li>.NET</li><li>PHP</li><li>PostgreSQL</li><li>Oracle</li><li>SAP integrations</li><li>Azure</li><li>AWS</li></ul></div>
+
+  <section class="block">
+    <div class="statement">
+      <p>Today, what anyone knows about your system lives in your vendor’s heads. <span>Every handover starts from zero, every audit is a scramble, and switching vendors feels too risky to try.</span></p>
+    </div>
+    <div class="cells c3">
+      <div class="cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6f98ff" stroke-width="1.5" aria-hidden="true"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4"/></svg><h3>Handovers start from zero</h3><p>When a developer rotates off your account, the reasons behind your system leave with them.</p></div>
+      <div class="cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6f98ff" stroke-width="1.5" aria-hidden="true"><path d="M9 5h6M9 3h6v4H9zM6 5H5v16h14V5h-1M8 12h8M8 16h5"/></svg><h3>Audits are a scramble</h3><p>Proving who changed what, and when, means digging through emails and invoices.</p></div>
+      <div class="cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6f98ff" stroke-width="1.5" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><h3>You’re locked in</h3><p>Without the knowledge in your hands, replacing the vendor feels riskier than paying them.</p></div>
+    </div>
+  </section>
+
+  <section class="block" id="record">
+    <div class="head">
+      <h2>What Spool leaves in your repository</h2>
+      <p>Every change we make comes with three things, written for the next person who reads your code. That might be us, your own team, or anyone you hire after.</p>
+    </div>
+    <div class="artifacts">
+      <div class="artifact">
+        <h3>A changelog</h3><p>What changed, in plain language, every time.</p>
+        <div class="doc"><div class="path">CHANGELOG.md</div><div class="body">
+          <div class="ent"><span>10:47</span><span>Upgrade Spring Boot 2.7 to 3.2 in 14 services</span></div>
+          <div class="ent"><span>Tue</span><span>Fix VAT rounding on credit notes</span></div>
+          <div class="ent"><span>Mon</span><span>Update bank API to version 4</span></div>
+          <div class="ent"><span>Fri</span><span>Patch OpenSSL in invoicing</span></div>
+        </div></div>
+      </div>
+      <div class="artifact">
+        <h3>A decision record</h3><p>Why it was done this way, and what was ruled out.</p>
+        <div class="doc"><div class="path">docs/decisions/0142-spring-boot-3.md</div><div class="body">
+          <b>0142. Move to Spring Boot 3.2</b>
+          <span class="lbl">Context</span><span>Version 2.7 no longer gets security updates.</span>
+          <span class="lbl">Decision</span><span>Upgrade all 14 services at once to keep one version.</span>
+          <span class="lbl">Consequences</span><span>Two tests rewritten. No change for users.</span>
+        </div></div>
+      </div>
+      <div class="artifact">
+        <h3>An audit trail</h3><p>Who or what made each change, and who approved it.</p>
+        <div class="doc"><div class="path">Audit trail, order system</div>
+          <table class="audit">
+            <tr><td>10:47</td><td><b>Deployed</b> by Spool</td></tr>
+            <tr><td>10:31</td><td><b>Reviewed</b> by Aino, Spool engineer</td></tr>
+            <tr><td>09:40</td><td><b>Tested</b>, 1,286 tests passed</td></tr>
+            <tr><td>08:19</td><td><b>Approved</b> by your limits</td></tr>
+            <tr><td>08:12</td><td><b>Found</b> by dependency scan</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="limits">
+    <div class="head">
+      <h2>You decide what goes live on its own</h2>
+      <p>Set a limit for each kind of change. Anything outside your limits waits for your approval.</p>
+    </div>
+    <div class="limits">
+      <div>
+        <ul>
+          <li><b>Start careful</b><span>Most customers begin with every change waiting for approval, then loosen the limits as trust builds.</span></li>
+          <li><b>Change it any time</b><span>Tighten a limit before a busy season, loosen it after.</span></li>
+          <li><b>Every decision is logged</b><span>Approvals, by you or by your limits, go into the audit trail.</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="panel" role="img" aria-label="Example limits: version updates and security fixes go live on their own; bug fixes, small improvements and infrastructure updates wait for approval.">
+          <div class="panel-h"><b>Limits — Order system</b><span>Set by Laura, IT manager</span></div>
+          <div class="rule"><div><b>Version updates</b><small>Minor and patch versions</small></div><div class="seg"><span class="on">On its own</span><span>Ask me</span></div></div>
+          <div class="rule"><div><b>Security fixes</b><small>Within 24 hours of publication</small></div><div class="seg"><span class="on">On its own</span><span>Ask me</span></div></div>
+          <div class="rule"><div><b>Bug fixes</b><small>Reported by your team or found in logs</small></div><div class="seg"><span>On its own</span><span class="ask">Ask me</span></div></div>
+          <div class="rule"><div><b>Small improvements</b><small>New fields, reports, changed rules</small></div><div class="seg"><span>On its own</span><span class="ask">Ask me</span></div></div>
+          <div class="rule"><div><b>Infrastructure updates</b><small>Servers, databases, cloud services</small></div><div class="seg"><span>On its own</span><span class="ask">Ask me</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="ticket">
+    <div class="head">
+      <h2>One ticket, start to finish</h2>
+      <p>Version updates, infrastructure, APIs, security fixes, bug fixes and small improvements, in one queue with one owner.</p>
+    </div>
+    <div class="ticket">
+      <div>
+        <div class="ticket-title"><b>Spring Boot 2.7 has reached end of support</b><span>Tuesday</span></div>
+        <ol class="steps">
+          <li><time>08:12</time><i></i><div><b>Found by dependency scan</b><small>14 services in your order system are affected.</small></div></li>
+          <li><time>08:19</time><i></i><div><b>Planned</b><small>Within the limits you set for version updates.</small></div></li>
+          <li><time>09:40</time><i></i><div><b>Built and tested</b><small>1,286 tests pass. Two outdated tests rewritten.</small></div></li>
+          <li><time>10:31</time><i></i><div><b>Reviewed by Aino, Spool engineer</b><small>Rewritten tests checked against the old behaviour.</small></div></li>
+          <li><time>10:47</time><i></i><div><b>Live in production</b><small>Changelog and decision record added to your repository.</small></div></li>
+        </ol>
+      </div>
+      <div class="result">
+        <div class="us"><b class="num">2 h 35<small>min</small></b><p>From finding the problem to running in production.</p></div>
+        <div class="them"><b class="num">4<small>days</small></b><p>Your previous vendor’s average for the same kind of change.</p></div>
+      </div>
+    </div>
+    <p class="note-row"><b>Not covered:</b> new systems built from scratch, packaged software, standard ERP cores, low-code configuration.</p>
+  </section>
+
+  <section class="block comp" id="security">
+    <div class="head">
+      <h2>Built for the audits you already have</h2>
+      <p>The record Spool keeps is the evidence auditors ask for.</p>
+    </div>
+    <div class="cells c4">
+      <div class="cell"><h3>ISO 27001 <em>Audit trail</em></h3><p>Every change is traceable to a person or a rule, with a timestamp.</p></div>
+      <div class="cell"><h3>NIS2 <em>Logging</em></h3><p>Security fixes are logged with when the issue was published and when it was patched.</p></div>
+      <div class="cell"><h3>Your accounts</h3><p>We work in your repositories and cloud accounts. Nothing is held on our side.</p></div>
+      <div class="cell"><h3>Made in Finland</h3><p>A European company. Your code and data stay in the EU.</p></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="head">
+      <h2>It started with us replacing ourselves</h2>
+    </div>
+    <div class="proof">
+      <div>
+        <h3>A car-repair chain’s ERP</h3>
+        <p>We built and maintained it for years. Then the client asked us to take ourselves out of the loop. Spool is what we built to do it.</p>
+        <div class="pair">
+          <div><span>Cost per week</span><span style="display:grid;gap:6px"><i class="old dots" style="width:100%">€5,600</i><i class="new dots" style="width:27%;min-width:84px">€1,500</i></span></div>
+          <div><span>Request to production</span><span style="display:grid;gap:6px"><i class="old dots" style="width:100%">3–5 days</i><i class="new dots" style="width:5%;min-width:92px">1–3 hours</i></span></div>
+        </div>
+      </div>
+      <div>
+        <h3>Against an offshore team</h3>
+        <p>A typical setup: six offshore developers, against Spool plus one architect on your side. Spool is priced on the work we maintain, from €30,000 a year.</p>
+        <div class="pair">
+          <div><span>Six developers</span><i class="old dots" style="width:100%">€720,000 a year</i></div>
+          <div><span>Spool and architect</span><i class="new dots" style="width:16.25%;min-width:150px">€117,000 a year</i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block closing" id="call">
+    <h2>Let’s look at your system together</h2>
+    <p>A 30-minute call with our CEO, Pekka Mattinen. Tell us what you run and who maintains it today. We’ll tell you honestly whether Spool fits.</p>
+    <div class="actions"><a class="pill pill-blue" href="#">Book a 30-minute call</a><a class="pill" href="mailto:hello@spool.example">Email us</a></div>
+  </section>
+</div>
+</main>
+
+<div class="mega" aria-hidden="true">spool</div>
+<footer>
+  <span>© 2026 Spool Oy, Helsinki. Every change, written down.</span>
+  <nav aria-label="Footer"><a href="#">Security</a><a href="#">Privacy</a><a href="#">Careers</a><a href="#">Contact</a></nav>
+</footer>
+<script src="thread.js"></script>
+</body>
+</html>
