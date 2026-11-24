@@ -64,23 +64,41 @@
   function pick(i){cur=i;
     small.forEach(function(x,k){x.setAttribute('aria-pressed',k===i)});
     panels.forEach(function(g,k){g.hidden=k!==i});draw();}
-  function show(){if(shown)return;shown=true;stage.classList.add('shown');draw();}
+  // Swap to the cards and stop pinning. The section collapses to the height of the cards; the page is
+  // moved once, by exactly the space that disappeared above, so what is on screen does not jump.
+  function show(){
+    if(shown)return;shown=true;
+    // keep whatever the reader is looking at where it is: the cards if they are on screen, otherwise the
+    // content after this section
+    var on=pinned.matches, r=stage.getBoundingClientRect(), stageSeen=r.top>-40&&r.top<window.innerHeight;
+    function ref(){return stageSeen?stage.getBoundingClientRect().top:ask.getBoundingClientRect().bottom;}
+    var before=on?ref():0;
+    stage.classList.add('shown');ask.classList.add('done');
+    if(on&&(stageSeen||before<=window.innerHeight)){var d=ref()-before; if(Math.abs(d)>1) window.scrollBy({top:d,behavior:'instant'});}
+    draw();
+  }
   // measure once (and on resize): the taller of the two card sets fixes the stage height
   function measure(){
     var h=0;panels.forEach(function(g,k){panels.forEach(function(x,j){x.hidden=j!==k});h=Math.max(h,res.offsetHeight)});
     panels.forEach(function(g,k){g.hidden=k!==cur});
-    ask.style.setProperty('--h',h+'px');
+    if(!shown) ask.style.setProperty('--h',h+'px');
     askTop=ask.getBoundingClientRect().top+window.scrollY; travel=Math.max(1,ask.offsetHeight-stage.offsetHeight);
   }
   big.forEach(function(b,i){b.addEventListener('click',function(){pick(i);if(pinned.matches)show();else panels[i].scrollIntoView({block:'start'});})});
   small.forEach(function(b,i){b.addEventListener('click',function(){pick(i)})});
   if(motion) sec.classList.add('draw');
   measure();
-  // the scroll handler only reads one number and compares it
-  var tick=false;
+  // While reading, the swap happens as soon as the question has been held long enough. During a jump
+  // (a link, or a very fast scroll) nothing is touched until scrolling has stopped.
+  function past(){var sticky=parseFloat(getComputedStyle(stage).top)||0;return (window.scrollY+sticky-askTop)/travel>.8;}
+  var tick=false, lastY=window.scrollY, jumpUntil=0, idle;
+  document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#"]');if(a)jumpUntil=Date.now()+2500;});
   window.addEventListener('scroll',function(){
-    if(shown||tick||!pinned.matches) return; tick=true;
-    requestAnimationFrame(function(){tick=false;var sticky=parseFloat(getComputedStyle(stage).top)||0;if((window.scrollY+sticky-askTop)/travel>.8)show();});
+    if(shown||!pinned.matches) return;
+    var y=window.scrollY, step=Math.abs(y-lastY); lastY=y;
+    if(Date.now()<jumpUntil||step>160){clearTimeout(idle);idle=setTimeout(function(){if(past())show()},180);return;}
+    if(tick) return; tick=true;
+    requestAnimationFrame(function(){tick=false;if(past())show();});
   },{passive:true});
   var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(measure,150)});
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(measure);
