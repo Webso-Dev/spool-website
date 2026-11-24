@@ -150,20 +150,17 @@ p{text-wrap:pretty}
 .seg.sm button[aria-pressed="true"]{color:var(--fg);background:var(--bg-3);box-shadow:inset 0 0 0 1px var(--line-2)}
 /* On a large screen the section pins: the question holds, then the cards replace it as you scroll or choose */
 @media (min-width:901px) and (min-height:640px){
-  .ask{height:200vh}
-  .ask-in{position:sticky;top:0;height:100vh;height:100svh;display:grid;align-items:center}
-  .q,.res{grid-area:1 / 1;transition:opacity .45s,transform .6s cubic-bezier(.2,.7,.2,1)}
-  .q{padding:84px 24px 40px}
-  /* one background fills the whole screen; the cards keep their natural height and sit in the middle of it */
-  .res{align-self:stretch;display:flex;flex-direction:column;justify-content:center;padding-top:84px;background:var(--bg-2);opacity:0;transform:translateY(48px);pointer-events:none}
-  .res .gains{border-top:1px solid var(--line);background:none}
-  .res .switch{background:none;border-bottom:1px solid var(--line)}
+  /* The stage is only as tall as the cards (--h, measured by the script) and sticks in the middle of the
+     screen, so the sections before and after stay visible. Nothing is moved by script while it is pinned. */
+  .ask{height:calc(var(--h,640px) + 90vh)}
+  .ask-in{position:sticky;top:max(84px,calc(84px + (100vh - 84px - var(--h,640px)) / 2));height:var(--h,640px);display:grid;align-items:center}
+  .q,.res{grid-area:1 / 1;transition:opacity .4s,transform .55s cubic-bezier(.2,.7,.2,1);will-change:opacity,transform}
+  .q{padding:0 24px}
+  .res{align-self:center;opacity:0;transform:translateY(40px);pointer-events:none}
+  .res .switch{border-bottom:0}
+  .shown .q{opacity:0;transform:translateY(-40px) scale(.97);pointer-events:none}
+  .shown .res{opacity:1;transform:none;pointer-events:auto}
   @media (max-height:780px){.res .gains-title{padding:26px 36px 22px;font-size:28px}.res .gain{padding:26px 32px 28px}.res .gain p{margin-bottom:20px}.res .switch{padding:10px 24px}}
-  /* once answered, the section stops pinning and is only as tall as the cards, so its neighbours show above and below */
-  .ask.done{height:auto}
-  .done .ask-in{position:static;height:auto;display:block}
-  .done .q{display:none}
-  .done .res{opacity:1;transform:none;pointer-events:auto;padding-top:0;animation:fadein .5s both}
 }
 @media (min-width:901px) and (min-height:640px) and (prefers-reduced-motion:reduce){.q,.res{transition:none}}
 .seg{display:inline-flex;margin-top:36px;padding:4px;border-radius:999px;border:1px solid var(--line-2);background:var(--bg-2);box-shadow:inset 0 1px 0 #ffffff0f}
@@ -236,7 +233,7 @@ p{text-wrap:pretty}
 .closing p.or a:hover{color:var(--fg)}
 .closing .actions{margin-top:34px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
-footer{max-width:var(--col);margin:0 auto;padding:64px 36px 28px;border-top:1px solid var(--line-2);font-size:15px;color:var(--fg-2)}
+footer{max-width:var(--col);margin:0 auto;padding:64px 36px 28px;border-top:1px dashed var(--line-2);font-size:15px;color:var(--fg-2)}
 .foot-top{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:48px}
 .foot-brand .spool-logo{color:var(--fg)}
 .foot-brand p{margin:18px 0 22px;max-width:30ch;color:var(--fg-2)}
@@ -431,7 +428,7 @@ footer nav a:hover,.foot-contact a:hover,.foot-base a:hover{color:var(--fg)}
 .ex-static{border-top:1px solid var(--line);background:var(--bg-2)}
 .ex-static > .tk{padding:36px 56px 40px}
 .stack.bare{padding:40px 24px 44px;border-top:1px solid var(--line);border-bottom:0;background:var(--bg-2)}
-#ticket > .ex-area{border-top:0}
+#ticket > .ex-area:first-child{border-top:0}
 /* contact: three ways to reach us */
 .reach{display:grid;grid-template-columns:repeat(3,1fr);background:var(--bg-2)}
 .reach > div{padding:40px 36px 42px;border-right:1px solid var(--line)}
@@ -507,8 +504,9 @@ footer nav a:hover,.foot-contact a:hover,.foot-base a:hover{color:var(--fg)}
 .block > .feats.two{border-top:0}
 @media (max-width:900px){.scope .cell:nth-last-child(-n+3){border-bottom:1px solid var(--line)}.scope .cell:last-child{border-bottom:0}}
 /* The comparison sits on the darker page background */
-#why .gains,#why .switch{background:none}
-@media (min-width:901px) and (min-height:640px){#why .res{background:none}}
+#why .gains,#why .switch{background:var(--bg-2)}
+#why .gains-title{background:var(--bg)}
+
 
 /* ---- Contact: the hero is a split panel, words on the left and the quiz on the right ---- */
 .hero.split{flex-direction:row;align-items:center;justify-content:space-between;gap:64px;text-align:left;padding:76px 72px 84px}

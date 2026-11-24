@@ -52,51 +52,39 @@
     t.addEventListener('keydown',function(e){var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!d)return;var n=tabs[(i+d+tabs.length)%tabs.length];pick(n);n.focus();});
   });
 })();
-// Comparison: the question and the cards share one pinned screen; scrolling or choosing swaps them
+// Comparison: the question and the cards share one pinned stage. Scrolling far enough, or choosing,
+// swaps them with a class change only; the page is never scrolled or re-laid-out by script.
 (function(){
   var sec=document.getElementById('why'); if(!sec) return;
-  var ask=sec.querySelector('.ask'), stage=sec.querySelector('.ask-in');
+  var ask=sec.querySelector('.ask'), stage=sec.querySelector('.ask-in'), res=sec.querySelector('.res');
   var big=[].slice.call(sec.querySelectorAll('.pick button')), small=[].slice.call(sec.querySelectorAll('.switch button')), panels=[].slice.call(sec.querySelectorAll('.gains'));
   var pinned=window.matchMedia('(min-width:901px) and (min-height:640px)'), motion=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var shown=false, cur=0;
+  var shown=false, cur=0, askTop=0, travel=1;
   function draw(){if(!motion)return;var g=panels[cur];g.classList.remove('go');void g.offsetWidth;g.classList.add('go');}
   function pick(i){cur=i;
     small.forEach(function(x,k){x.setAttribute('aria-pressed',k===i)});
     panels.forEach(function(g,k){g.hidden=k!==i});draw();}
-  function range(){return ask.offsetHeight-window.innerHeight;}
-  function top(){return ask.getBoundingClientRect().top+window.scrollY;}
-  var res=sec.querySelector('.res'), hold=0, until=0;
-  // answering (by clicking, or by scrolling far enough) swaps the question for the cards and ends the pin
-  function finish(){
-    if(shown) return; shown=true; ask.classList.add('done');
-    // measure the section, not the cards: the cards are still mid-transition
-    // centre it in the space under the top bar
-    var bar=84, room=window.innerHeight-bar-ask.offsetHeight;
-    hold=window.scrollY+ask.getBoundingClientRect().top-bar-Math.max(0,room/2); until=Date.now()+700;
-    window.scrollTo({top:hold,behavior:'instant'});
-    draw();
+  function show(){if(shown)return;shown=true;stage.classList.add('shown');draw();}
+  // measure once (and on resize): the taller of the two card sets fixes the stage height
+  function measure(){
+    var h=0;panels.forEach(function(g,k){panels.forEach(function(x,j){x.hidden=j!==k});h=Math.max(h,res.offsetHeight)});
+    panels.forEach(function(g,k){g.hidden=k!==cur});
+    ask.style.setProperty('--h',h+'px');
+    askTop=ask.getBoundingClientRect().top+window.scrollY; travel=Math.max(1,ask.offsetHeight-stage.offsetHeight);
   }
-  // Only a reader scrolling through the question answers it by scrolling. A jump from a link
-  // (the top bar, or "Skip this") passes straight over, and so does any fast programmatic scroll.
-  var lastY=window.scrollY, jumpUntil=0;
-  document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#"]');if(a)jumpUntil=Date.now()+2500;});
-  function sync(){
-    var y=window.scrollY, step=Math.abs(y-lastY), p=(y-top())/Math.max(1,range()); lastY=y;
-    if(shown||!pinned.matches||Date.now()<jumpUntil||step>140) return;
-    if(p>.8&&p<=1.02) finish();
-  }
-  big.forEach(function(b,i){
-    b.addEventListener('click',function(){pick(i);
-      if(pinned.matches) finish(); else panels[i].scrollIntoView({block:'start'});});
-  });
+  big.forEach(function(b,i){b.addEventListener('click',function(){pick(i);if(pinned.matches)show();else panels[i].scrollIntoView({block:'start'});})});
   small.forEach(function(b,i){b.addEventListener('click',function(){pick(i)})});
   if(motion) sec.classList.add('draw');
+  measure();
+  // the scroll handler only reads one number and compares it
   var tick=false;
   window.addEventListener('scroll',function(){
-    // for a moment after the swap, soak up leftover scroll momentum so the cards stay centred
-    if(Date.now()<until&&Math.abs(window.scrollY-hold)>1) window.scrollTo({top:hold,behavior:'instant'});
-    if(!tick){tick=true;requestAnimationFrame(function(){tick=false;sync()})}},{passive:true});
-  window.addEventListener('resize',sync);sync();
+    if(shown||tick||!pinned.matches) return; tick=true;
+    requestAnimationFrame(function(){tick=false;var sticky=parseFloat(getComputedStyle(stage).top)||0;if((window.scrollY+sticky-askTop)/travel>.8)show();});
+  },{passive:true});
+  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(measure,150)});
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(measure);
+  window.addEventListener('load',measure);
   // small screens: the cards sit below the question, so draw them when they scroll into view
   if(motion&&'IntersectionObserver' in window){
     var io=new IntersectionObserver(function(e,o){if(!e.some(function(x){return x.isIntersecting}))return;o.disconnect();if(!pinned.matches)draw();},{threshold:.3});
