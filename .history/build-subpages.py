@@ -1,4 +1,4 @@
-import re,sys,os
+import re,sys,os,json
 root=sys.argv[1]; os.chdir(root)
 s=open('index.html').read()
 def cut(a,b,frm=0,inc=True):
@@ -59,7 +59,30 @@ def closing(h='Tell us about the system you depend on',p='Three quick questions,
     {inner}
     <p class="or">Or write to <a href="mailto:{MAIL}">{MAIL}</a></p>
   </section>'''
-def head(title,desc):
+SITE='https://spool-website.vercel.app'   # change here when the site moves to its own domain
+PAGES=[]
+def seo(file,title,desc,ogdesc=None):
+    url=SITE+'/'+('' if file=='index.html' else file); PAGES.append(url)
+    return f'''<link rel="canonical" href="{url}">
+<meta property="og:site_name" content="Spool">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{ogdesc or desc}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{url}">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="{SITE}/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Spool — your software, maintained without a break">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{title}">
+<meta name="twitter:description" content="{ogdesc or desc}">
+<meta name="twitter:image" content="{SITE}/assets/og.png">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">'''
+def head(title,desc,file):
     return f'''<!doctype html>
 <html lang="en">
 <head>
@@ -68,10 +91,7 @@ def head(title,desc):
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <meta name="theme-color" content="#151414">
-<meta property="og:title" content="{title}">
-<meta property="og:description" content="{desc}">
-<meta property="og:type" content="website">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+{seo(file,title,desc)}
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/hankengrotesk/v12/ieVn2YZDLWuGJpnzaiwFXS9tYtpd59CxCis4.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/ibmplexmono/v23/-F63fjptAgt5VM-kVkqdyU8n1i8q131nj-o.woff2">
@@ -99,7 +119,7 @@ def page(file,title,desc,h1,lead,body,close=None,cta=True,mark=None,hero=None):
     <div class="actions"><a class="pill pill-light" href="contact.html#call">Book a 30-minute call</a></div>""" if cta else ''}
   </section>
 </div>'''
-    html=head(title,desc)+header(file)+'\n\n<main>\n'+hero+'\n\n<div class="frame">'+body+'\n  '+(closing() if close is None else close)+'\n\n</div>\n</main>\n\n'+footer()+'\n<script src="assets/site.js"></script>\n</body>\n</html>\n'
+    html=head(title,desc,file)+header(file)+'\n\n<main>\n'+hero+'\n\n<div class="frame">'+body+'\n  '+(closing() if close is None else close)+'\n\n</div>\n</main>\n\n'+footer()+'\n<script src="assets/site.js"></script>\n</body>\n</html>\n'
     open(file,'w').write(html); print('wrote',file,len(html))
 
 
@@ -255,4 +275,16 @@ page('compare.html','Spool compared with an outside vendor or your own team','Wh
 h=open('index.html').read()
 i=h.index('<footer>'); j=h.index('</footer>',i)+9; h=h[:i]+footer()+h[j:]
 i=h.index('<section class="block closing" id="call">'); j=h.index('</section>',i)+10; h=h[:i]+closing()+h[j:]
-open('index.html','w').write(h); print('home footer and closing updated')
+ht=re.search(r'<title>(.*?)</title>',h).group(1); hd=re.search(r'<meta name="description" content="(.*?)">',h).group(1)
+HOME_OG='Your custom software, maintained without a break. Every change live in hours, with one owner and a written record.'
+ld='<script type="application/ld+json">'+json.dumps({"@context":"https://schema.org","@graph":[
+ {"@type":"Organization","@id":SITE+"/#org","name":"Spool","url":SITE+"/","logo":SITE+"/assets/icon-512.png","email":"hello@hellospool.com","description":hd,"address":{"@type":"PostalAddress","addressLocality":"Helsinki","addressCountry":"FI"}},
+ {"@type":"WebSite","@id":SITE+"/#site","name":"Spool","url":SITE+"/","publisher":{"@id":SITE+"/#org"},"inLanguage":"en"}]},ensure_ascii=False)+'</script>'
+i=h.index('<meta name="theme-color"'); i=h.index('\n',i)+1; j=h.index('<link rel="preconnect"')
+h=h[:i]+seo('index.html',ht,hd,HOME_OG)+'\n'+ld+'\n'+h[j:]
+open('index.html','w').write(h); print('home head, footer and closing updated')
+PAGES.sort(key=lambda u:(u!=SITE+'/',u))
+open('sitemap.xml','w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join('  <url><loc>'+u+'</loc></url>\n' for u in PAGES)+'</urlset>\n')
+open('robots.txt','w').write('User-agent: *\nAllow: /\nDisallow: /versions/\nDisallow: /.history/\nDisallow: /index-v\n\nSitemap: '+SITE+'/sitemap.xml\n')
+open('site.webmanifest','w').write(json.dumps({"name":"Spool","short_name":"Spool","description":"Automated maintenance for the custom software your business runs on.","start_url":"/","display":"browser","background_color":"#151414","theme_color":"#151414","icons":[{"src":"assets/icon-192.png","sizes":"192x192","type":"image/png"},{"src":"assets/icon-512.png","sizes":"512x512","type":"image/png"}]},indent=2)+'\n')
+print('sitemap',len(PAGES),'urls; robots.txt; site.webmanifest')
