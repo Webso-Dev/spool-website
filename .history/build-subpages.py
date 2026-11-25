@@ -45,10 +45,10 @@ def footer():
       <h4>Contact</h4>
       <a href="mailto:{MAIL}">{MAIL}</a>
       <a href="{CALL}">Ask for a 30-minute call</a>
-      <span>Spool Oy<br>Helsinki, Finland</span>
+      <span>Helsinki, Finland</span>
     </div>
   </div>
-  <div class="foot-base"><span>© 2026 Spool Oy</span><span>Helsinki, Finland</span></div>
+  <div class="foot-base"><span>© 2026 Spool</span><span>Helsinki, Finland</span></div>
 </footer>'''
 def closing(h='Tell us about the system you depend on',p='Three quick questions, then a 30-minute call. We’ll tell you honestly whether Spool fits.',quiz=True):
     inner=f'''<div class="actions"><a class="pill pill-blue" href="{CALL}">Book a 30-minute call</a></div>'''
@@ -161,16 +161,26 @@ page('features.html','Spool features — automated maintenance for custom softwa
  +group('plug','It fits what you have','No engineering setup to build first.',[('Your own tools','Set up in your Jira, GitHub, Sentry and cloud.'),('Two to three weeks','From the first call to the first tickets done.'),('One person on your side','An architect or a product owner is enough.'),('EU data residency','Models and hosting can stay inside the EU.'),('Your code stays yours','We work in your repositories and cloud accounts.'),('Pay for finished work','Not for hours, and not for developer-months.')]),mark='grid')
 
 # ---- Pricing
-costviz='<div class="gains one"><div class="gain wide"><div class="viz"><div class="dm">'+el(0,1,25,3,'mid',0)+el(0,5,4,3,'on',1)+'</div>'+key('€720,000 a year for six offshore developers','€117,000 a year for Spool and one architect on your side')+'</div><h3>About a sixth of the cost</h3><p>A typical setup, from our own years as a vendor: the same maintenance work, done by Spool with one architect on your side.</p></div></div>'
-page('pricing.html','Spool pricing — pay for finished work, not hours','Spool is priced on the amount of work it maintains, from €30,000 a year, with a fixed estimate after we look at your systems. No hourly billing.',
- 'You pay for finished work,<br>not for hours','Priced on the amount of work we maintain, from €30,000 a year.',
- sect('From €30,000 a year','One price for the maintenance of your systems. No hourly rate and no developer-months.',
-  figs([('€30,000','a year is where prices start'),('Fixed','estimate, given after we look at your systems'),('€0','for estimates, clarifications or waiting')],plain=True))
- +sect('How the price is set','Three steps, and the first is free.',
-  rows([('We look at your systems','What they are built with, how much changes in a normal month, and what is waiting in the backlog.'),
-        ('You get a fixed estimate','Priced on the amount of work we maintain, not on hours.'),
-        ('You pay for finished work','Every ticket we accept gets done.')]))
- +sect('What it replaces','',costviz)
+def cellrow(items): return '<div class="cells c3 scope">'+''.join(chr(10)+'      <div class="cell">'+dot(MARK[m])+'<div><h3>'+a+'</h3><p>'+b+'</p></div></div>' for m,a,b in items)+chr(10)+'    </div>'
+invoice='''<div class="inv">
+      <div class="inv-sum"><b>One fixed price</b><span>Set from the amount of work we maintain, and agreed before we start.</span></div>
+      <dl class="inv-lines">
+        <div class="paid"><dt>Finished maintenance work</dt><dd>Fixed price</dd></div>
+        <div><dt>Estimates</dt><dd>€0</dd></div>
+        <div><dt>Clarifications</dt><dd>€0</dd></div>
+        <div><dt>Waiting</dt><dd>€0</dd></div>
+        <div><dt>Work that isn’t finished</dt><dd>€0</dd></div>
+      </dl>
+    </div>'''
+sixth='<div class="gain"><div class="viz"><div class="dm">'+el(0,1,25,3,'mid',0)+el(0,5,4,3,'on',1)+'</div>'+key('€720,000 a year','€117,000 a year')+'</div><h3>About a sixth of the cost</h3><p>A typical setup from our own years as a vendor: six offshore developers, replaced by Spool and one architect on your side.</p></div>'
+page('pricing.html','Spool pricing — pay for finished work, not hours','Spool is priced on the amount of work it maintains, with a fixed estimate after we look at your systems. No hourly billing.',
+ 'You pay for finished work,<br>not for hours','One fixed price for the maintenance of your systems, agreed before we start.',
+ sect('What is on the invoice','One line you pay for. No hourly rate and no developer-months.',invoice)
+ +sect('What the price depends on','We look at your systems first, free of charge, and then give you a fixed estimate.',
+  cellrow([('grid','What your systems are built with','Languages, frameworks and where they run.'),
+           ('bars','How much changes in a normal month','Updates, fixes and requests from your team.'),
+           ('stack','What is waiting in the backlog','Work that has piled up before we start.')]))
+ +sect('What it replaces','Two examples from our own work.','<div class="gains two">'+chr(10)+'      '+cards[0]+chr(10)+'      '+sixth+chr(10)+'    </div>')
  +sect('What is included','The same for every customer.',
   feats([('Work Spool finds itself','Versions, infrastructure, API changes, vulnerabilities and production errors.'),('Requests from your team','Bug fixes and small improvements, in the same queue.'),('Setup in your tools','Two to three weeks, in your own Jira, GitHub, Sentry and cloud.'),('A full audit trail','Changelog and decision records in your repository.'),('Your limits','You decide what goes live on its own.'),('No lock-in','The code and the knowledge stay with you.')])),
  close=closing('Get a fixed estimate','Three quick questions, then a 30-minute call. Bring your vendor contract and a rough idea of the backlog.'),mark='bars')
@@ -189,21 +199,26 @@ page('security.html','Security and compliance — Spool','How Spool keeps your c
  close=closing('Have a security question?','Send it to us, or book a call and bring your security lead. We will answer in writing.',quiz=False),mark='shield')
 
 # ---- About
-page('about.html','About Spool — Helsinki','Spool is a Helsinki company that automates the maintenance of custom business software. It was built by people who ran a software consultancy for years.',
- 'We used to be<br>the vendor','Spool is built by people who spent years maintaining other companies’ custom software by the hour.',
+def resub(card,p): return re.sub(r'<p>.*?</p></div>$','<p>'+p+'</p></div>',card,flags=re.S)
+page('about.html','About Spool — Helsinki','Spool automates the maintenance of custom business software. It comes out of years of running a software consultancy and doing that maintenance by the hour.',
+ 'We used to be<br>the vendor','Spool comes out of years of maintaining other companies’ custom software by the hour.',
  '''
   <section class="block">
     <div class="statement">
       <p class="lead">We ran a software consultancy for years. We built custom systems for our clients, then billed by the hour to keep them running. In time we saw that most of that maintenance did not need us. Spool is what we built to do it instead.</p>
-      <p class="by"><b>How Spool started</b>, Helsinki</p>
     </div>
   </section>
-'''+sect('Our own first case','An ERP for a chain of car-repair shops that we had built and maintained ourselves.',
-  figs([('€5,600','a week for maintenance, before'),('€1,500','a week for maintenance, with Spool'),('1–3 hours','from a request to production, down from 3–5 days')]))
+'''+sect('How we got here','No client asked us to replace ourselves. We worked that part out on our own.',
+  rows([('We built custom systems','The order systems, ERPs and portals our clients’ businesses run on.'),
+        ('We billed by the hour to keep them running','Version updates, API changes, security fixes and bugs, month after month.'),
+        ('We saw that most of it did not need us','The same kinds of change kept coming back, and each one followed the same steps.'),
+        ('We automated our own work','Spool finds the work, does it within the limits you set, and writes down every change.')]))
+ +sect('Our own first case','An ERP for a chain of car-repair shops that we had built and maintained ourselves.',
+  '<div class="gains two">'+chr(10)+'      '+resub(cards[0],'What the maintenance of that one system cost, before and after.')+chr(10)+'      '+resub(cards[1],'From a request to the change running in production.')+chr(10)+'    </div>')
  +sect('What we believe','Three things we learned from the other side of the invoice.',
-  feats([('You should pay for finished work','Not for hours, and not for developer-months.'),('The knowledge should stay with you','Every change is written down in your own repository.'),('Maintenance should not wait','Hours from a problem to production, not days.')]))
- +sect('The company','',
-  figs([('Spool Oy','a Finnish company'),('Helsinki','is where we are based'),('Pekka Mattinen','is our CEO. He takes the first call with every new customer')],plain=True)),cta=False,mark='spool')
+  cellrow([('bars','You should pay for finished work','Not for hours, and not for developer-months.'),
+           ('lock','The knowledge should stay with you','Every change is written down in your own repository.'),
+           ('arrow','Maintenance should not wait','Hours from a problem to production, not days.')])),cta=False,mark='spool')
 
 # ---- Contact
 contact_hero=f'''<div class="hero-wrap">

@@ -540,3 +540,25 @@ footer nav a:hover,.foot-contact a:hover,.foot-base a:hover{color:var(--fg)}
 
 /* ---- Accent colours. Every accent colour in this file is one of these variables (green). ---- */
 :root{--a0:#001c0759;--a1:#001c0766;--a2:#001c0780;--a3:#004521;--a4:#00452140;--a5:#00452159;--a6:#00452180;--a7:#005e2e;--a8:#006d38;--a9:#007d3e;--a10:#006e3b;--a11:#008043;--a12:#00934a;--a13:#00934a1f;--a14:#00934a26;--a15:#00934a73;--a16:#00934a99;--a17:#008447;--a18:#00a157;--a19:#30b86b;--a20:#31b96f;--a21:#52c07e;--a22:#5dc486;--a23:#6fc990;--a24:#86d09e;--a25:#a3dcba;--a26:#a3dcba8c;--a27:#a9ddba66;--a28:#c2e7d0;--a29:#d4eedd;--a30:#ebf7ee;--a31:#f0f9f3}
+
+/* pricing: invoice panel and two-card comparison */
+.inv{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);border-top:1px dashed var(--line);background:var(--bg-2)}
+.inv-sum{display:flex;flex-direction:column;justify-content:center;padding:44px 36px;border-right:1px solid var(--line)}
+.inv-sum b{font-size:clamp(30px,3.4vw,46px);line-height:1.05;letter-spacing:-.035em;font-weight:500}
+.inv-sum span{margin-top:14px;font-size:17px;color:var(--fg-2);max-width:30ch}
+.inv-lines{padding:20px 36px}
+.inv-lines > div{display:flex;align-items:baseline;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}
+.inv-lines > div:last-child{border-bottom:0}
+.inv-lines dt{flex:1;display:flex;align-items:baseline;gap:14px;font-size:17px;color:var(--fg-2)}
+.inv-lines dt::after{content:"";flex:1;min-width:20px;border-bottom:2px dotted var(--line-2);transform:translateY(-4px)}
+.inv-lines dd{font-family:var(--mono);font-size:15px;color:var(--fg-2)}
+.inv-lines .paid dt{color:var(--fg);font-weight:600}
+.inv-lines .paid dd{color:var(--fg)}
+.gains.two{grid-template-columns:repeat(2,1fr)}
+.gains.two .gain:nth-of-type(2n){border-right:0}
+@media (max-width:900px){
+  .inv,.gains.two{grid-template-columns:1fr}
+  .inv-sum{padding:28px 22px;border-right:0;border-bottom:1px solid var(--line)}
+  .inv-lines{padding:10px 22px}
+  .inv-lines dt{font-size:16px}
+}
