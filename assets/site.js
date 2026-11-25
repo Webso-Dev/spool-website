@@ -138,7 +138,7 @@
 // The short quiz before the call: three clicks (or skip), then an email with the answers already filled in.
 (function(){
   var box=document.querySelector('[data-quiz]'); if(!box) return;
-  var MAIL='hello@hellospool.com', motion=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var motion=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var Q=[
     {k:'Maintained by',q:'Who maintains your custom software today?',a:['An outside vendor','Our own developers','A mix of both','Nobody, really']},
     {k:'Systems',q:'How many systems are we talking about?',a:['One','Two to five','More than five','Not sure yet']},
@@ -181,9 +181,8 @@
       foot.appendChild(link('Skip the questions',function(){go(Q.length,1)}));
     }else{
       var lines=Q.map(function(q,i){return ans[i]?q.k+': '+ans[i]:null}).filter(Boolean);
-      var mail='Hello,\n\nWe would like a 30-minute call about our system.\n\n'+(lines.length?lines.join('\n')+'\n\n':'')+'Company: \nYour name: \nTimes that suit us: \n';
       var a=el('a','pill pill-blue','Book a 30-minute call');
-      a.href='mailto:'+MAIL+'?subject='+encodeURIComponent('30-minute call about our system')+'&body='+encodeURIComponent(mail);
+      a.href='https://cal.com/pekka/spool'+(lines.length?'?notes='+encodeURIComponent(lines.join('\n')):'');a.target='_blank';a.rel='noopener';
       foot.appendChild(a);foot.appendChild(link(ans.some(function(x){return x})?'Change an answer':'Answer the questions',function(){ans=[];go(0,-1)}));
       foot.classList.add('end');
     }

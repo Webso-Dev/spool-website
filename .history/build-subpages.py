@@ -15,7 +15,7 @@ import re as _re
 cards=_re.findall(r'<div class="gain">.*?</p></div>',gv,_re.S)
 def gains(c): return '<div class="gains">'+''.join(chr(10)+'      '+x for x in c)+chr(10)+'    </div>'
 def figs(items,plain=False): return '<div class="figs'+(' plain' if plain else '')+'">'+''.join(f'<div><b class="num">{a}</b><span>{b}</span></div>' for a,b in items)+'</div>'
-MAIL='hello@hellospool.com'; CALL=f'mailto:{MAIL}?subject=30-minute%20call%20about%20our%20system'
+MAIL='hello@hellospool.com'; CALL='https://cal.com/pekka/spool'
 def header(cur):
     links=''.join(f'<a href="{h}"{" aria-current=\"page\"" if h==cur else ""}>{t}</a>' for h,t in NAV)
     return f'''<header class="top">
@@ -44,14 +44,14 @@ def footer():
     <div class="foot-contact">
       <h4>Contact</h4>
       <a href="mailto:{MAIL}">{MAIL}</a>
-      <a href="{CALL}">Ask for a 30-minute call</a>
+      <a href="{CALL}" target="_blank" rel="noopener">Book a 30-minute call</a>
       <span>Helsinki, Finland</span>
     </div>
   </div>
   <div class="foot-base"><span>© 2026 Spool</span><span>Helsinki, Finland</span></div>
 </footer>'''
 def closing(h='Tell us about the system you depend on',p='Three quick questions, then a 30-minute call. We’ll tell you honestly whether Spool fits.',quiz=True):
-    inner=f'''<div class="actions"><a class="pill pill-blue" href="{CALL}">Book a 30-minute call</a></div>'''
+    inner=f'''<div class="actions"><a class="pill pill-blue" href="{CALL}" target="_blank" rel="noopener">Book a 30-minute call</a></div>'''
     if quiz: inner=f'''<div class="quiz" data-quiz>{inner}</div>'''
     return f'''<section class="block closing" id="call">
     <h2>{h}</h2>
@@ -251,7 +251,7 @@ contact_hero=f'''<div class="hero-wrap">
       <ul class="split-list"><li>Takes about a minute</li><li>No sales deck</li><li>A fixed estimate if Spool fits</li></ul>
       <p class="split-mail">Or write to <a href="mailto:{MAIL}">{MAIL}</a></p>
     </div>
-    <div class="split-card"><div class="quiz" data-quiz><div class="actions"><a class="pill pill-blue" href="{CALL}">Book a 30-minute call</a></div></div></div>
+    <div class="split-card"><div class="quiz" data-quiz><div class="actions"><a class="pill pill-blue" href="{CALL}" target="_blank" rel="noopener">Book a 30-minute call</a></div></div></div>
   </section>
 </div>'''
 page('contact.html','Contact Spool — book a 30-minute call','Book a 30-minute call with Spool, or write to hello@hellospool.com. Bring your vendor contract and a rough idea of your backlog.',
