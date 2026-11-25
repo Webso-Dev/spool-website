@@ -162,10 +162,10 @@ FOUND=[('New versions','Frameworks, runtimes and libraries your system depends o
 SAFE=[('A full audit trail','Who or what changed each line, when, and why.'),('Ready for NIS2','Each security fix is logged with when it was published and patched.'),('EU data residency','Models and hosting can stay inside the EU.'),('Your code stays yours','We work in your repositories and cloud accounts.'),('You set the limits','You decide what goes live on its own and what waits for you.'),('Free to leave','The changelog and decision records stay in your repository.')]
 
 # ---- How it works
-page('how-it-works.html','How Spool works — from a problem to production','How Spool finds maintenance work on your custom software, does it automatically within the limits you set, and writes down every change.',
+page('how-it-works.html','How Spool works — from a problem to production','How Spool uses AI to find maintenance work on your custom software, do it within the limits you set, and write down every change.',
  'From a problem to production,<br>without a meeting','Spool finds the maintenance work, does it, and writes down what it did. Here is each step.',
  sect('Everything lands in one queue','Work Spool finds and work your team asks for go through the same automated steps, and end up in production and in your repository.',flow)
- +sect('Six steps, the same for every change','Our software does these on its own. A person steps in only where you have said one should.',
+ +sect('Six steps, the same for every change','Spool’s AI does these on its own. A person steps in only where you have said one should.',
   stepgrid([('eye','It finds the work','Spool watches for new package versions, infrastructure releases, changes in the APIs you depend on, security vulnerabilities and errors in production. Requests from your team land in the same queue.'),
         ('grid','It plans the change','Each ticket gets a plan before any code is written. Security vulnerabilities go to the front of the queue.'),
         ('play','It builds and tests','The change is made in your repository and run against your tests. Tests that no longer match are rewritten and flagged.'),
@@ -280,7 +280,7 @@ i=h.index('<section class="block closing" id="call">'); j=h.index('</section>',i
 ht=re.search(r'<title>(.*?)</title>',h).group(1); hd=re.search(r'<meta name="description" content="(.*?)">',h).group(1)
 HOME_OG='Your custom software, maintained without a break. Every change live in hours, with one owner and a written record.'
 ld='<script type="application/ld+json">'+json.dumps({"@context":"https://schema.org","@graph":[
- {"@type":"Organization","@id":SITE+"/#org","name":"Spool","url":SITE+"/","logo":SITE+"/assets/icon-512.png","email":"hello@hellospool.com","description":hd,"address":{"@type":"PostalAddress","addressLocality":"Helsinki","addressCountry":"FI"}},
+ {"@type":"Organization","@id":SITE+"/#org","name":"Spool","alternateName":"Spool AI","url":SITE+"/","logo":SITE+"/assets/icon-512.png","email":"hello@hellospool.com","description":hd,"address":{"@type":"PostalAddress","addressLocality":"Helsinki","addressCountry":"FI"}},
  {"@type":"WebSite","@id":SITE+"/#site","name":"Spool","url":SITE+"/","publisher":{"@id":SITE+"/#org"},"inLanguage":"en"}]},ensure_ascii=False)+'</script>'
 i=h.index('<meta name="theme-color"'); i=h.index('\n',i)+1; j=h.index('<link rel="preconnect"')
 h=h[:i]+seo('index.html',ht,hd,HOME_OG)+'\n'+ld+'\n'+h[j:]
