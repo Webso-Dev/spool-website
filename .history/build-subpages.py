@@ -150,9 +150,7 @@ page('how-it-works.html','How Spool works — from a problem to production','How
         ('shield','It checks against your limits','You decide which kinds of change can go live on their own. Anything outside those limits waits for a Spool engineer or for your approval.'),
         ('arrow','It goes live','The change is deployed to production through your own pipeline and cloud accounts.'),
         ('stack','It is written down','A changelog entry, a decision record and an audit trail are added to your repository, so anyone can see what changed and why.')]))
- +'\n  <section class="block" id="ticket">\n    '+exall+'\n  </section>\n'
- +sect('Getting started','Spool is set up inside the tools you already use.',
-  figs([('2–3 weeks','from the first call to the first tickets done'),('Your tools','set up in your own Jira, GitHub, Sentry and cloud'),('One person','on your side: an architect or a product owner')],plain=True)),mark='arrow')
+ +'\n  <section class="block" id="ticket">\n    '+exall+'\n  </section>\n',mark='arrow')
 
 # ---- Features
 page('features.html','Spool features — automated maintenance for custom software','Everything Spool does: finds maintenance work on its own, plans, builds, tests and deploys it, keeps you in control, and fits into the tools you already use.',
@@ -238,19 +236,7 @@ contact_hero=f'''<div class="hero-wrap">
 </div>'''
 page('contact.html','Contact Spool — book a 30-minute call','Book a 30-minute call with Spool, or write to hello@hellospool.com. Bring your vendor contract and a rough idea of your backlog.',
  '','',
- sect('What happens on the call','Thirty minutes, and you leave with a clear answer.',
-  rows([('You describe the system','What it does, who built it, and who keeps it running today.'),
-        ('We look at the maintenance','Bring your vendor contract, or a rough idea of the backlog and what it costs you.'),
-        ('We tell you whether Spool fits','If it does, we give you a fixed estimate after looking at your systems. If it does not, we say so.')]))
- +f'''
-  <section class="block">
-    <div class="reach">
-      <div><span>Write to us</span><a href="mailto:{MAIL}">{MAIL}</a><p>We answer within one working day.</p></div>
-      <div><span>Ask for a call</span><a href="{CALL}">Suggest a time by email</a><p>Send a couple of times that suit you and we will confirm one.</p></div>
-      <div><span>Where we are</span><b>Spool Oy</b><p>Helsinki, Finland</p></div>
-    </div>
-  </section>
-''',close='',cta=False,hero=contact_hero)
+ '',close='',cta=False,hero=contact_hero)
 
 # ---- What we maintain
 page('what-we-maintain.html','What Spool maintains — custom software, kept running','The kinds of maintenance Spool takes over for custom business software: version updates, infrastructure, APIs, security fixes, bug fixes and small improvements.',
