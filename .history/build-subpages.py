@@ -19,17 +19,17 @@ MAIL='hello@hellospool.com'; CALL='https://cal.com/pekka/spool'
 def header(cur):
     links=''.join(f'<a href="{h}"{" aria-current=\"page\"" if h==cur else ""}>{t}</a>' for h,t in NAV)
     return f'''<header class="top">
-  <a class="brand" href="index.html" aria-label="Spool home">{logo}</a>
+  <a class="brand" href="./" aria-label="Spool home">{logo}</a>
   <nav aria-label="Main">{links}</nav>
   <div class="right"><a class="pill pill-sm" href="contact.html"{" aria-current=\"page\"" if cur=="contact.html" else ""}>Contact</a><a class="pill pill-sm pill-blue" href="https://cal.com/pekka/spool" target="_blank" rel="noopener">Book a call</a></div>
 </header>'''
 def footer():
-    pages=''.join(f'<a href="{h}">{t}</a>' for h,t in [('index.html','Home')]+NAV[:3]+MORE)
+    pages=''.join(f'<a href="{h}">{t}</a>' for h,t in [('./','Home')]+NAV[:3]+MORE)
     pages2=''.join(f'<a href="{h}">{t}</a>' for h,t in NAV[3:]+[('contact.html','Contact')])
     return f'''<footer>
   <div class="foot-top">
     <div class="foot-brand">
-      <a href="index.html" aria-label="Spool home">{logo.replace('height="26"','height="28"')}</a>
+      <a href="./" aria-label="Spool home">{logo.replace('height="26"','height="28"')}</a>
       <p>Automated maintenance for the custom software your business runs on.</p>
       <a class="pill pill-sm pill-blue" href="https://cal.com/pekka/spool" target="_blank" rel="noopener">Book a call</a>
     </div>
@@ -59,7 +59,7 @@ def closing(h='Tell us about the system you depend on',p='Three quick questions,
     {inner}
     <p class="or">Or write to <a href="mailto:{MAIL}">{MAIL}</a></p>
   </section>'''
-SITE='https://spool-website.vercel.app'   # change here when the site moves to its own domain
+SITE='https://www.hellospool.com'   # change here when the site moves to its own domain
 PAGES=[]
 def seo(file,title,desc,ogdesc=None):
     url=SITE+'/'+('' if file=='index.html' else file); PAGES.append(url)

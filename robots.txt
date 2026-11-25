@@ -4,4 +4,4 @@ Disallow: /versions/
 Disallow: /.history/
 Disallow: /index-v
 
-Sitemap: https://spool-website.vercel.app/sitemap.xml
+Sitemap: https://www.hellospool.com/sitemap.xml
