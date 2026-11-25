@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://www.hellospool.com/</loc></url>
-  <url><loc>https://www.hellospool.com/about.html</loc></url>
-  <url><loc>https://www.hellospool.com/compare.html</loc></url>
-  <url><loc>https://www.hellospool.com/contact.html</loc></url>
-  <url><loc>https://www.hellospool.com/features.html</loc></url>
-  <url><loc>https://www.hellospool.com/how-it-works.html</loc></url>
-  <url><loc>https://www.hellospool.com/pricing.html</loc></url>
-  <url><loc>https://www.hellospool.com/security.html</loc></url>
-  <url><loc>https://www.hellospool.com/what-we-maintain.html</loc></url>
+  <url><loc>https://www.hellospool.com/about</loc></url>
+  <url><loc>https://www.hellospool.com/compare</loc></url>
+  <url><loc>https://www.hellospool.com/contact</loc></url>
+  <url><loc>https://www.hellospool.com/features</loc></url>
+  <url><loc>https://www.hellospool.com/how-it-works</loc></url>
+  <url><loc>https://www.hellospool.com/pricing</loc></url>
+  <url><loc>https://www.hellospool.com/security</loc></url>
+  <url><loc>https://www.hellospool.com/what-we-maintain</loc></url>
 </urlset>

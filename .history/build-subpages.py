@@ -62,7 +62,7 @@ def closing(h='Tell us about the system you depend on',p='Three quick questions,
 SITE='https://www.hellospool.com'   # change here when the site moves to its own domain
 PAGES=[]
 def seo(file,title,desc,ogdesc=None):
-    url=SITE+'/'+('' if file=='index.html' else file); PAGES.append(url)
+    url=SITE+'/'+('' if file=='index.html' else file[:-5]); PAGES.append(url)
     return f'''<link rel="canonical" href="{url}">
 <meta property="og:site_name" content="Spool">
 <meta property="og:title" content="{title}">
@@ -82,6 +82,8 @@ def seo(file,title,desc,ogdesc=None):
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">'''
+# links carry no .html: vercel.json turns on cleanUrls, so /pricing serves pricing.html
+def clean(html): return re.sub(r'href="([a-z-]+)\.html([#"])',r'href="\1\2',html)
 def head(title,desc,file):
     return f'''<!doctype html>
 <html lang="en">
@@ -120,7 +122,7 @@ def page(file,title,desc,h1,lead,body,close=None,cta=True,mark=None,hero=None):
   </section>
 </div>'''
     html=head(title,desc,file)+header(file)+'\n\n<main>\n'+hero+'\n\n<div class="frame">'+body+'\n  '+(closing() if close is None else close)+'\n\n</div>\n</main>\n\n'+footer()+'\n<script src="assets/site.js"></script>\n</body>\n</html>\n'
-    open(file,'w').write(html); print('wrote',file,len(html))
+    open(file,'w').write(clean(html)); print('wrote',file,len(html))
 
 
 MARK={
@@ -282,7 +284,7 @@ ld='<script type="application/ld+json">'+json.dumps({"@context":"https://schema.
  {"@type":"WebSite","@id":SITE+"/#site","name":"Spool","url":SITE+"/","publisher":{"@id":SITE+"/#org"},"inLanguage":"en"}]},ensure_ascii=False)+'</script>'
 i=h.index('<meta name="theme-color"'); i=h.index('\n',i)+1; j=h.index('<link rel="preconnect"')
 h=h[:i]+seo('index.html',ht,hd,HOME_OG)+'\n'+ld+'\n'+h[j:]
-open('index.html','w').write(h); print('home head, footer and closing updated')
+open('index.html','w').write(clean(h)); print('home head, footer and closing updated')
 PAGES.sort(key=lambda u:(u!=SITE+'/',u))
 open('sitemap.xml','w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join('  <url><loc>'+u+'</loc></url>\n' for u in PAGES)+'</urlset>\n')
 open('robots.txt','w').write('User-agent: *\nAllow: /\nDisallow: /versions/\nDisallow: /.history/\nDisallow: /index-v\n\nSitemap: '+SITE+'/sitemap.xml\n')
