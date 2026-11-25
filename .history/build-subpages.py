@@ -109,7 +109,7 @@ MARK={
 'bars':["#......","#......","#..#...","#..#...","#..#..#","#..#..#","#..#..#"],
 'shield':["#######","#######","#######",".#####.",".#####.","..###..","...#..."],
 'spool':["#######",".#####.","..###..","..###..","..###..",".#####.","#######"],
-'mail':["#######","##...##","#.#.#.#","#..#..#","#.....#","#######","......."],
+'mail':["#######","##...##","#.#.#.#","#..#..#","#.....#","#######"],
 'stack':[".......","#######",".......","#######",".......","#######","......."],
 'versus':[".......","##.....","##.....","##.....","##..##.","##..##.","##..##."],
 'eye':[".......","..###..",".#...#.","#..#..#",".#...#.","..###..","......."],
@@ -120,7 +120,7 @@ MARK={
 }
 def dot(rows,cls='dot-icon'):
     c=''.join('<circle cx="%d" cy="%d" r="2.6"%s/>'%(x*10+5,y*10+5,' class="on"' if ch=='#' else '') for y,r in enumerate(rows) for x,ch in enumerate(r))
-    return f'<svg class="dot-icon {cls}" viewBox="0 0 70 70" aria-hidden="true">{c}</svg>'
+    return f'<svg class="dot-icon {cls}" viewBox="0 0 70 {len(rows)*10}" aria-hidden="true">{c}</svg>'
 def el(x,y,w,h,cls,o=0): return f'<i class="{cls}" style="--x:{x};--y:{y};--w:{w};--h:{h};--o:{o}"></i>'
 def key(b,a): return f'<dl class="key"><div><dt>Before</dt><dd>{b}</dd></div><div class="now"><dt>With Spool</dt><dd>{a}</dd></div></dl>'
 def group(icon,h,p,items):
