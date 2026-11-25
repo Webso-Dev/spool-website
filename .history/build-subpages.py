@@ -21,7 +21,7 @@ def header(cur):
     return f'''<header class="top">
   <a class="brand" href="index.html" aria-label="Spool home">{logo}</a>
   <nav aria-label="Main">{links}</nav>
-  <div class="right"><a class="pill pill-sm" href="contact.html"{" aria-current=\"page\"" if cur=="contact.html" else ""}>Contact</a><a class="pill pill-sm pill-blue" href="contact.html#call">Book a call</a></div>
+  <div class="right"><a class="pill pill-sm" href="contact.html"{" aria-current=\"page\"" if cur=="contact.html" else ""}>Contact</a><a class="pill pill-sm pill-blue" href="https://cal.com/pekka/spool" target="_blank" rel="noopener">Book a call</a></div>
 </header>'''
 def footer():
     pages=''.join(f'<a href="{h}">{t}</a>' for h,t in [('index.html','Home')]+NAV[:3]+MORE)
@@ -31,7 +31,7 @@ def footer():
     <div class="foot-brand">
       <a href="index.html" aria-label="Spool home">{logo.replace('height="26"','height="28"')}</a>
       <p>Automated maintenance for the custom software your business runs on.</p>
-      <a class="pill pill-sm pill-blue" href="contact.html#call">Book a call</a>
+      <a class="pill pill-sm pill-blue" href="https://cal.com/pekka/spool" target="_blank" rel="noopener">Book a call</a>
     </div>
     <nav aria-label="Product">
       <h4>Product</h4>
@@ -116,7 +116,7 @@ def page(file,title,desc,h1,lead,body,close=None,cta=True,mark=None,hero=None):
     {dot(MARK[mark],'mark') if mark else ''}
     <h1>{h1}</h1>
     <p>{lead}</p>{"""
-    <div class="actions"><a class="pill pill-light" href="contact.html#call">Book a 30-minute call</a></div>""" if cta else ''}
+    <div class="actions"><a class="pill pill-light" href="https://cal.com/pekka/spool" target="_blank" rel="noopener">Book a 30-minute call</a></div>""" if cta else ''}
   </section>
 </div>'''
     html=head(title,desc,file)+header(file)+'\n\n<main>\n'+hero+'\n\n<div class="frame">'+body+'\n  '+(closing() if close is None else close)+'\n\n</div>\n</main>\n\n'+footer()+'\n<script src="assets/site.js"></script>\n</body>\n</html>\n'
