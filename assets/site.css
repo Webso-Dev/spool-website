@@ -183,22 +183,22 @@ p{text-wrap:pretty}
   background-image:radial-gradient(circle,var(--dot) 0 calc(var(--u) * .23),transparent calc(var(--u) * .29));background-size:var(--u) var(--u)}
 .dm > i{--dot:#f0e3de;position:absolute;left:calc(var(--x,0) * var(--u));top:calc(var(--y,0) * var(--u));width:calc(var(--w) * var(--u));height:calc(var(--h) * var(--u));
   background-image:radial-gradient(circle,var(--dot) 0 calc(var(--u) * .23),transparent calc(var(--u) * .29));background-size:var(--u) var(--u)}
-.dm > i.on{filter:drop-shadow(0 0 calc(var(--u) * .35) var(--a26))}
+.dm > i.on{--dot:#fff;filter:drop-shadow(0 0 calc(var(--u) * .35) #ffffff59)}
 .dm > i.mid{--dot:#f0e3de73}
 .dm > i.trk{--dot:#f0e3de4d}
 /* the race: the vendor's dot ticks along its track while Spool's keeps crossing */
 .dm.race{overflow:hidden}
 .dm .run{position:absolute;top:calc(var(--y) * var(--u));height:var(--u);background-size:var(--u) var(--u)}
 .dm .run.slow{left:0;width:var(--u);background-image:radial-gradient(circle,#f0e3deb3 0 calc(var(--u) * .26),transparent calc(var(--u) * .32));animation:slow 14s steps(25,end) infinite}
-.dm .run.fast{left:calc(var(--u) * -5);width:calc(var(--u) * 5);background-image:radial-gradient(circle,#fff 0 calc(var(--u) * .26),transparent calc(var(--u) * .32));-webkit-mask-image:linear-gradient(90deg,transparent,#000 85%);mask-image:linear-gradient(90deg,transparent,#000 85%);filter:drop-shadow(0 0 calc(var(--u) * .45) var(--a23));animation:fast 1.9s steps(30,end) infinite}
+.dm .run.fast{left:calc(var(--u) * -5);width:calc(var(--u) * 5);background-image:radial-gradient(circle,#fff 0 calc(var(--u) * .26),transparent calc(var(--u) * .32));-webkit-mask-image:linear-gradient(90deg,transparent,#000 85%);mask-image:linear-gradient(90deg,transparent,#000 85%);filter:drop-shadow(0 0 calc(var(--u) * .45) #ffffff59);animation:fast 1.9s steps(30,end) infinite}
 @keyframes slow{to{left:calc(var(--u) * 25)}}
 @keyframes fast{0%{left:calc(var(--u) * -5)}55%,100%{left:calc(var(--u) * 25)}}
 /* a bright column sweeps across: over lit dots it reads as a shimmer, over dim ones as a scan */
-.dm .sweep{position:absolute;top:0;left:0;width:var(--u);height:100%;background-image:radial-gradient(circle,#fff 0 calc(var(--u) * .26),transparent calc(var(--u) * .32));background-size:var(--u) var(--u);filter:drop-shadow(0 0 calc(var(--u) * .5) var(--a23));animation:sweep 3.2s steps(25,end) infinite}
+.dm .sweep{position:absolute;top:0;left:0;width:var(--u);height:100%;background-image:radial-gradient(circle,#fff 0 calc(var(--u) * .26),transparent calc(var(--u) * .32));background-size:var(--u) var(--u);filter:drop-shadow(0 0 calc(var(--u) * .5) #ffffff59);animation:sweep 3.2s steps(25,end) infinite}
 .dm.scan .sweep{opacity:.9}
-.dm u{position:absolute;left:calc(var(--x) * var(--u));top:calc(var(--y) * var(--u));width:var(--u);height:var(--u);background:radial-gradient(circle,#f0e3de 0 calc(var(--u) * .23),transparent calc(var(--u) * .29));opacity:0;animation:found 3.2s linear infinite;animation-delay:calc(var(--x) * .128s)}
+.dm u{position:absolute;left:calc(var(--x) * var(--u));top:calc(var(--y) * var(--u));width:var(--u);height:var(--u);background:radial-gradient(circle,#fff 0 calc(var(--u) * .23),transparent calc(var(--u) * .29));opacity:0;animation:found 3.2s linear infinite;animation-delay:calc(var(--x) * .128s)}
 @keyframes sweep{to{left:calc(var(--u) * 25)}}
-@keyframes found{0%{opacity:0}3%{opacity:1;filter:drop-shadow(0 0 5px var(--a25))}55%{opacity:1}75%,100%{opacity:0}}
+@keyframes found{0%{opacity:0}3%{opacity:1;filter:drop-shadow(0 0 5px #ffffff80)}55%{opacity:1}75%,100%{opacity:0}}
 .key{margin-top:18px;font-size:14.5px}
 .key > div{display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:baseline;padding:8px 0;border-top:1px solid var(--line)}
 .key dt{font-size:13.5px;color:var(--fg-3)}
